@@ -1,0 +1,137 @@
+<div class="container">
+  <br>
+  <div class="row">
+    <aside class="col-sm-12">
+      <p>Stripe Upfront Payment</p>
+      <article class="card">
+        <div class="card-body p-5">
+          <ul class="nav bg-light nav-pills rounded nav-fill mb-3" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" data-toggle="pill" href="#nav-tab-card">
+              <i class="fa fa-credit-card"></i> Credit Card</a>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane fade show active" id="nav-tab-card">
+              <%= form_tag '#', id: 'stripe-map-form', class: "paymnt_form " do %>
+                <%= hidden_field_tag :authenticity_token, form_authenticity_token -%>
+                <%= hidden_field_tag 'paid_amount', User::PLAN_AMOUNT.to_i %>
+
+                <div class="payment-errors">
+                </div>
+
+                <!-- form-group.// -->
+                <div class="form-group">
+                  <label for="cardNumber">Card number</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" name="cardNumber" placeholder="" data-stripe="number" onkeypress="return isNumberKey(event)" required="">
+                    <div class="input-group-append">
+                      <span class="input-group-text text-muted">
+                      <i class="fab fa-cc-visa"></i>   <i class="fab fa-cc-amex"></i>
+                      <i class="fab fa-cc-mastercard"></i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- form-group.// -->
+                <div class="row">
+                  <div class="col-sm-8">
+                    <div class="form-group">
+                      <label><span class="hidden-xs">Expiration</span> </label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" placeholder="MM" name="" data-stripe="exp-month" onkeypress="return isNumberKey(event)" required="">
+                        <input type="text" class="form-control" placeholder="YY" name="" data-stripe="exp-year" onkeypress="return isNumberKey(event)" required="">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label data-toggle="tooltip" title="" data-original-title="3 digits code on back side of the card">CVV <i class="fa fa-question-circle"></i></label>
+                      <input type="text" class="form-control" data-stripe="cvc" onkeypress="return isNumberKey(event)" required="">
+                    </div>
+                    <!-- form-group.// -->
+                  </div>
+                </div>
+                <!-- row.// -->
+                Total upfront payment:
+                £ <%= number_with_delimiter(User::PLAN_AMOUNT.to_i, :delimiter => ",") %>
+                <%= submit_tag 'Make Payment and set up Direct Debit', class: 'subscribe btn btn-primary btn-block' %>
+              <!-- </form> -->
+              <% end %>
+            </div>
+          </div>
+          <!-- tab-content .// -->
+        </div>
+        <!-- card-body.// -->
+      </article>
+    </aside>
+  </div>
+</div>
+
+<script type="text/javascript">
+  Stripe.setPublishableKey("<%= ENV['stripe_publishable_key'] %>");
+
+  $(document).on('turbolinks:load', function(){
+
+    $('#stripe-map-form').submit(function(event) {
+      var $form = $(this);
+      $form.find(':submit').prop('disabled', true)
+      $form.find(':submit').css('background', '#dddddd')
+      event.preventDefault();
+
+      Stripe.card.createToken($form, stripeResponseHandler)
+      // Prevent the form from submitting with the default action
+      return false;
+    });
+  });
+
+  var submit_count=0
+  function stripeResponseHandler(status, response) {
+    var $form = $('#stripe-map-form');
+    if (response.error) {
+      // Show the errors on the form
+      $form.find('.payment-errors').addClass('error')
+      $form.find('.payment-errors').text(response.error.message);
+      $form.find(':submit').prop('disabled', false)
+      $form.find(':submit').css('background', '')
+    } else {
+      // response contains id and card, which contains additional card details
+      var token = response.id;
+      $form.find(':submit').prop('disabled', true)
+      $form.find(':submit').css('background', '#dddddd')
+      // Insert the token into the form so it gets submitted to the server
+      $form.append($('<input type="hidden" name="stripeToken" />').val(token));
+      // and submit
+      $form.find('.payment-errors').removeClass('error')
+
+      if (submit_count==0){
+        $.ajax({
+          method: "POST",
+          beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+          url: "/create_subscription",
+          data: $form.serialize(),
+          success: function (data, status) {
+          },
+          error: function (status, err) {
+            console.log("error", err)
+            window.location.href='/home'
+          }
+        });
+        submit_count=submit_count+1;
+      }
+
+    }
+  };
+
+  function isNumberKey(evt){
+    var charCode = (evt.which) ? evt.which : event.keyCode
+    if(charCode > 31 && (charCode < 48 || charCode > 57)){
+      return false
+    }
+    else{
+      return true
+    }
+  };
+
+</script>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>StripeDemo</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+    <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+  </head>
+
+  <body>
+    <div class="container">
+      <%= flash_messages %>
+      <%= yield %>
+    </div>
+  </body>
+</html>
