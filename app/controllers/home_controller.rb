@@ -1,27 +1,26 @@
 class HomeController < ApplicationController
-
   def create_subscription
     begin
       current_user.setup_stripe_card_details(params[:stripeToken])
 
       Stripe::Charge.create(
-        :amount => (User::PLAN_AMOUNT.to_i*100),
-        :currency => "GBP",
-        :customer => current_user.stripe_customer_id
+        amount: (User::PLAN_AMOUNT.to_i * 100),
+        currency: 'GBP',
+        customer: current_user.stripe_customer_id
       )
 
       if current_user.go_cardless_mandate.present? && current_user.go_cardless_customer.present?
 
         create_gocardless_subscription
 
-        flash[:success] = "Your payment has been successfully completed and subscription added to existing bank account."
+        flash[:success] = 'Your payment has been successfully completed and subscription added to existing bank account.'
         return redirect_to root_path
       else
         success_redirect_url = "#{root_url}/confirm_mandate"
 
         redirect_flow = GO_CARDLESS_CLIENT.redirect_flows.create(
           params: {
-            description: "Demo GoCardless",
+            description: 'Demo GoCardless',
             session_token: "#{current_user.id}",
             success_redirect_url: success_redirect_url,
             prefilled_customer: {
@@ -33,17 +32,16 @@ class HomeController < ApplicationController
       end
 
     rescue Exception => e
-      flash[:error]= e.message
+      flash[:error] = e.message
       return redirect_to root_path
     end
   end
-
 
   def confirm_mandate
     begin
       redirect_flow = GO_CARDLESS_CLIENT.redirect_flows.complete(
                         params[:redirect_flow_id],
-                        params: { session_token: "#{current_user.id}"}
+                        params: { session_token: "#{current_user.id}" }
                       )
       current_user.go_cardless_customer = redirect_flow.links.customer
       current_user.go_cardless_mandate = redirect_flow.links.mandate
@@ -52,9 +50,9 @@ class HomeController < ApplicationController
 
         create_gocardless_subscription
 
-        flash[:notice] = "Your payment has been successfully completed and subscription added to your GoCardless bank account."
+        flash[:notice] = 'Your payment has been successfully completed and subscription added to your GoCardless bank account.'
       else
-        flash[:error] = "Something went wrong!"
+        flash[:error] = 'Something went wrong!'
       end
 
     rescue StandardError => e
@@ -70,11 +68,11 @@ class HomeController < ApplicationController
       GO_CARDLESS_CLIENT.subscriptions.create(
         params: {
           amount: User::PLAN_AMOUNT.to_i,
-          currency: "GBP",
+          currency: 'GBP',
           name: 'Test Monthly Plan',
           interval_unit: 'monthly',
           interval: 1,
-          start_date: Date.current+2.month,
+          start_date: Date.current + 2.month,
           day_of_month: 1,
           links: {
             mandate: current_user.go_cardless_mandate

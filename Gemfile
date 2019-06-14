@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
-  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
+  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?('/')
   "https://github.com/#{repo_name}.git"
 end
 
@@ -27,21 +27,23 @@ gem 'jquery-rails'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.5'
+gem 'bootstrap', '~> 4.3.1'
+gem 'bootstrap_form'
 gem 'devise'
+gem 'devise-bootstrap-form'
+gem 'jbuilder', '~> 2.5'
+gem 'figaro'
+gem 'gocardless_pro'
+gem 'mini_racer'
 gem 'pg'
+gem 'pry'
 gem 'stripe'
 gem 'simple_form'
-gem 'gocardless_pro'
-gem 'figaro'
-gem 'pry'
-gem 'bootstrap', '~> 4.3.1'
-gem 'mini_racer'
-gem "bootstrap_form"
-gem 'devise-bootstrap-form'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem 'rubycritic', require: false
+  gem 'rubocop', require: false
   gem 'byebug', platform: :mri
 end
 
