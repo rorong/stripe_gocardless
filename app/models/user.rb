@@ -7,7 +7,7 @@ class User < ApplicationRecord
   PLAN_AMOUNT = '100'.freeze
 
   def setup_stripe_card_details(stripe_token)
-    if !stripe_customer_id.present?
+    if stripe_customer_id.blank?
       customer = Stripe::Customer.create(
                   email: email,
                   description: "Customer for #{email}",
