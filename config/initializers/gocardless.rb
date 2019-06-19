@@ -1,4 +1,4 @@
-if Rails.env.development? || Rails.env.staging?
+if Rails.env.development? || Rails.env.staging? || Rails.env.test?
   GO_CARDLESS_CLIENT = GoCardlessPro::Client.new(
     # We recommend storing your access token in an
     # environment variable for security, but you could

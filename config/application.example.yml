@@ -3,6 +3,11 @@ development:
   stripe_secret_key: 'Your-stripe_secret_key'
   gocardless_access_token: 'Your-gocardless_access_token'
 
+test:
+  stripe_publishable_key: 'Your-stripe_publishable_key'
+  stripe_secret_key: 'Your-stripe_secret_key'
+  gocardless_access_token: 'Your-gocardless_access_token'
+
 production:
   stripe_publishable_key: 'Your-stripe_publishable_key'
   stripe_secret_key: 'Your-stripe_secret_key'

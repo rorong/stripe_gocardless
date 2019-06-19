@@ -44,6 +44,12 @@ group :development, :test do
   gem 'rubycritic', require: false
   gem 'rubocop', require: false
   gem 'byebug', platform: :mri
+
+  gem 'database_cleaner'
+  gem 'factory_bot_rails'
+  gem 'stripe-ruby-mock', '~> 2.5.0', :require => 'stripe_mock'
+  gem 'rspec-rails'
+  gem 'faker'
 end
 
 group :development do
