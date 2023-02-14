@@ -1,4 +1,32 @@
-<b> Welcome <%= current_user.email %></b><br>
-<%= link_to "Log Out", destroy_user_session_path, method: :delete %>
+<div class="row center">
+  <aside class="col-sm-12">
+    <article class="card">
+      <div class="card-body p-5">
+		<b> Welcome <%= current_user.email %></b><br>
+		<%= link_to "Log Out", destroy_user_session_path, method: :delete %>
+		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+		  Make Payment
+		</button>
+      </div>
+      <div id="3dsecure"></div>
+    </article>
+  </aside>
+</div>
 
-<%= render 'pay' %>
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Stripe Upfront Payment</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <%= render 'pay' %>
+      </div>
+    </div>
+  </div>
+</div>
+
