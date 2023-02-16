@@ -5,6 +5,21 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   PLAN_AMOUNT = '100'.freeze
+  CURRENCY = 'usd'.freeze
+  DESCRIPTION = 'Software development services'.freeze
+  SHIPPING = {
+    name: 'Jenny Rosen'.freeze,
+    address: {
+              line1: '510 Townsend St'.freeze,
+              postal_code: '98140'.freeze,
+              city: 'San Francisco'.freeze,
+              state: 'CA'.freeze,
+              country: 'US'.freeze,
+            }}
+  PAYMENT_METHOD = 'pm_card_visa'.freeze
+  INTERVAL_UNIT = 'monthly'.freeze
+  GO_CARDLESS_NAME = 'Test Monthly Plan'.freeze
+  GO_CARDLESS_CURRENCY = 'GBP'.freeze
 
   def setup_stripe_card_details(stripe_token)
     if stripe_customer_id.blank?
