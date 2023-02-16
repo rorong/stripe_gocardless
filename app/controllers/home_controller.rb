@@ -60,7 +60,8 @@ class HomeController < ApplicationController
 
   # payment's params
   def payment_params
-    { amount: (User::PLAN_AMOUNT.to_i * 100),
+    {
+      amount: (User::PLAN_AMOUNT.to_i * 100),
       currency: User::CURRENCY,
       description: User::DESCRIPTION,
       customer: current_user.stripe_customer_id,
@@ -82,14 +83,16 @@ class HomeController < ApplicationController
 
   # redirect params of gocardless
   def gocardless_redirect_params
-    { params: {
-      description: 'Demo GoCardless',
-      session_token: "#{current_user.id}",
-      success_redirect_url: "#{root_url}/confirm_mandate",
-      prefilled_customer: {
-        email: "#{current_user.email}"
+    {
+      params: {
+        description: 'Demo GoCardless',
+        session_token: "#{current_user.id}",
+        success_redirect_url: "#{root_url}/confirm_mandate",
+        prefilled_customer: {
+          email: "#{current_user.email}"
+        }
       }
-    } }
+    }
   end
 
   # create a gocardless subscription
